@@ -522,15 +522,13 @@ public:
         m_node2(std::move(node2)),
         m_par_value(value) {}
 
-  [[nodiscard]] std::string to_string() const {
+  template <typename OSTREAM>
+  void write(OSTREAM &os) const {
     if (m_node2) {
-      return fmt::format(
-          "{} {} {}",
-          m_node1,
-          *m_node2,
-          m_par_value.to_string());
+      fmt::print(os, "{} {} {}", m_node1, *m_node2, m_par_value.to_string());
+    } else {
+      fmt::print(os, "{} {}", m_node1, m_par_value.to_string());
     }
-    return fmt::format("{} {}", m_node1, m_par_value.to_string());
   }
 };
 
@@ -543,7 +541,9 @@ public:
     fmt::println(os, "*CAP");
     std::size_t idx = 1;
     for (cap const &c : m_caps) {
-      fmt::println(os, "{} {}", idx++, c.to_string());
+      fmt::print(os, "{} ", idx++);
+      c.write(os);
+      fmt::println("");
     }
   }
 };
@@ -640,4 +640,4 @@ public:
     m_internal_def.write(os);
   }
 };
-#endif  // SPEF_HPP
+#endif // SPEF_HPP
